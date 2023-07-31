@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -12,8 +13,15 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return response()->json($users, 200);
+        $user = Auth::user();
+        if ($user->rol == 'administrador') {
+            $users = User::all();
+            return response()->json($users, 200);
+        } else {
+            return response()->json([
+                'mensaje' => 'Usuario no autorizado'
+            ], 401);
+        }
     }
 
     /**
@@ -33,20 +41,30 @@ class UsersController extends Controller
                 'telefono' => 'integer',
                 'rol' => 'integer'
             ]);
+        
+            $user = Auth::user();
 
-            $user = User::create([
-                'nombre' => $request->nombre,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'direccion' => $request->direccion,
-                'codigo_postal' => $request->codigo_postal,
-                'barrio' => $request->barrio,
-                'municipio' => $request->municipio,
-                'telefono' => $request->telefono,
-                'rol' => $request->rol ?? 1
-            ]);
-
-            return response()->json($user, 201);
+            if ($user->rol == 'administrador') {
+                User::create([
+                    'nombre' => $request->nombre,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'direccion' => $request->direccion,
+                    'codigo_postal' => $request->codigo_postal,
+                    'barrio' => $request->barrio,
+                    'municipio' => $request->municipio,
+                    'telefono' => $request->telefono,
+                    'rol' => $request->rol ?? 1
+                ]);
+    
+                return response()->json([
+                    'mensaje' => 'usuario creado con exito'
+                ], 201);
+            } else {
+                return response()->json([
+                    'mensaje' => 'Usuario no autorizado'
+                ], 401);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'mensaje' => 'Ah ocurrido un error al crear el usuario',
@@ -73,7 +91,6 @@ class UsersController extends Controller
             $request->validate([
                 'nombre' => 'string',
                 'email' => 'email|unique:users,email',
-                'password' => 'string',
                 'direccion' => 'string',
                 'codigo_postal' => 'integer',
                 'barrio' => 'string',
@@ -100,10 +117,18 @@ class UsersController extends Controller
     public function destroy(string $id)
     {
         try {
-            User::where('id', '=', $id)->delete();
-            return response()->json([
-                'mensaje' => 'Producto eliminado con exito'
-            ], 200);
+            $user = Auth::user();
+
+            if ($user->rol == 'administrador') {
+                User::where('id', '=', $id)->delete();
+                return response()->json([
+                    'mensaje' => 'Producto eliminado con exito'
+                ], 200);
+            } else {
+                return response()->json([
+                    'mensaje' => 'Usuario no autorizado'
+                ], 401);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Ah ocurrido un error al eliminar el usuario'

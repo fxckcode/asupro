@@ -35,7 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('unidadmedida', UnidadMedidaController::class);
         Route::apiResource('categorias', CategoriasController::class);
         Route::apiResource('productos', ProductosController::class);
-        Route::apiResource('users', UsersController::class)->middleware('checkadmin');
+        Route::apiResource('users', UsersController::class);
         Route::get('productos/categoria/{id}', [ProductosController::class, 'getProductsByCategorie']);
         Route::get('productos/unidadmedida/{id}', [ProductosController::class, 'getProductsByUnidadMedida']);
         Route::middleware('checkdate')->group(function () {
