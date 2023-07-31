@@ -82,18 +82,18 @@ class ProductosController extends Controller
     {
         try {
             $request->validate([
-                'nombre' => 'required|string',
+                'nombre' => 'string',
                 'marca' => 'string',
-                'precio' => 'required|integer',
-                'unidad_medida_id' => 'required|integer',
-                'categoria_id' => 'required|integer',
+                'precio' => 'integer',
+                'unidad_medida_id' => 'integer',
+                'categoria_id' => 'integer',
                 'stock' => 'integer'
             ]);
 
             $user = Auth::user();
 
             if ($user->rol == 'administrador') {
-                Productos::update($request->all());
+                Productos::where('id', '=', $id)->update($request->all());
 
                 return response()->json([
                     'mensaje' => 'Producto actualizado con exito'

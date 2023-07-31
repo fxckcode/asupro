@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\HorariosController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\UnidadMedidaController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('unidadmedida', UnidadMedidaController::class);
         Route::apiResource('categorias', CategoriasController::class);
         Route::apiResource('productos', ProductosController::class);
+        Route::apiResource('users', UsersController::class)->middleware('checkadmin');
         Route::get('productos/categoria/{id}', [ProductosController::class, 'getProductsByCategorie']);
         Route::get('productos/unidadmedida/{id}', [ProductosController::class, 'getProductsByUnidadMedida']);
         Route::middleware('checkdate')->group(function () {
