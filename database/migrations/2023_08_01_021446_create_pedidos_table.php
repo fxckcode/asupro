@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productos', function (Blueprint $table) {
+        Schema::create('pedidos', function (Blueprint $table) {
             $table->increments('id')->unsigned(false);
-            $table->string('nombre');
-            $table->string('marca');
-            $table->decimal('precio', 10, 2);
-            $table->integer('unidad_medida_id')->index();
-            $table->integer('categoria_id')->index();
-            $table->integer('stock');
+            $table->integer('usuario_id')->index();
+            $table->integer('producto_id')->index();
+            $table->integer('cantidad');
+            $table->string('direccion');
+            $table->integer('telefono');
+            $table->enum('estado', ['entregado', 'en proceso', 'pendiente']);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('pedidos');
     }
 };

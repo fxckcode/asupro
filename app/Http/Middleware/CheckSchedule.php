@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Horarios;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,20 +21,27 @@ class CheckSchedule
         date_default_timezone_set('America/Bogota');
         $hora = date('G');
         $user = Auth::user();
+        $horario = Horarios::where('estado', 1)->first();
+
+        $horaInicioFormat = Carbon::createFromFormat('H:i:s', $horario->hora_inicio);
+        $horaFinFormat = Carbon::createFromFormat('H:i:s', $horario->hora_fin);
+        $horaInicio = $horaInicioFormat->format('G');
+        $horaFin = $horaFinFormat->format('G');
+        $diaInicio = $horario->dia_inicio;
+        $diaFin = $horario->dia_fin;
+
+        $fechaActual = Carbon::now();
+        $numeroDiaFormat = $fechaActual->dayOfWeek;
 
         if ($user->rol == 'administrador') {
             return $next($request);
         }
 
-        if ($user->rol == 'usuario' && $hora >= 7 && $hora <= 18) {
+        if ($user->rol == 'usuario' && $hora >= $horaInicio && $hora <= $horaFin && $numeroDiaFormat >= $diaInicio && $numeroDiaFormat <= $diaFin ) {
+            return $next($request);
+        } else {
+            $request->merge(['estadoHorario' => 'aplazado']);
             return $next($request);
         }
-
-        echo $hora;
-
-        return response()->json([
-            'error' => 'No puede iniciar sesión en este momento. Intente de nuevo entre las 7 AM y las 6 PM.',
-            'hora' => $hora
-        ], 403);
     }
 }

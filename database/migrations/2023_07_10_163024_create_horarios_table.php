@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('horarios', function (Blueprint $table) {
             $table->increments('id')->unsigned(false);
-            $table->integer('usuario_id')->index();
-            $table->enum('dia_semana', ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']);
+            $table->integer('dia_inicio');
+            $table->integer('dia_fin');
             $table->time('hora_inicio');
             $table->time('hora_fin');
+            $table->enum('estado', ['activo', 'inactivo']);
         });
     }
 

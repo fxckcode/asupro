@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Database\Seeders\UnidadMedidaSeeder;
+use Database\Seeders\UserSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +16,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UnidadMedidaSeeder::class
+            UnidadMedidaSeeder::class,
+            UserSeeder::class,
+            HorariosSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
 

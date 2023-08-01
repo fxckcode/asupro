@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('horarios', function(Blueprint $table) {
+        Schema::table('pedidos', function(Blueprint $table) {
             $table->foreign('usuario_id')->references('id')->on('users');
+            $table->foreign('producto_id')->references('id')->on('productos');
         });
     }
 
